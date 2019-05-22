@@ -1,22 +1,24 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-
-const Square = (props) => {
+import { TouchableOpacity, StyleSheet, Text } from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+const Square = ({children, handlePress}) => {
     return(
-        <View style={styles.square}>
-              <Text style={styles.text}>{props.children}</Text>
-        </View>
+        <TouchableOpacity activeOpacity={.5} onPress={ handlePress } style={styles.square}>
+              <Text style={styles.text}>{children}</Text>
+        </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
     square: {
-        backgroundColor: '#f9f9f9',
+        backgroundColor: 'plum',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 70,
-        height: 70,
-      },
+        width: wp('25%'),
+        height: wp('25%'),
+        borderWidth: 1,
+        borderColor: '#d6d7da',
+    },
     text: {
         fontSize: 17
     }

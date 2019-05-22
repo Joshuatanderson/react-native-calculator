@@ -7,7 +7,8 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button, Dimensions} from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Squares from './components/Squares';
 
 const instructions = Platform.select({
@@ -17,27 +18,36 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+
 export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {}
   }
+
+  handlePress = () => {
+    console.log('button pressed');
+  }
+
   render() {
+
     const {} = this.props;
     return (
       <View style={styles.container}>
-        <Squares/>
+        <Squares
+          handlePress = {this.handlePress}
+        />
       </View>
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    width: wp('100%')
   },
   noStyle: {
 
