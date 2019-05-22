@@ -6,36 +6,39 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Dimensions} from 'react-native';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import React, { Component } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Squares from './components/Squares';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
+import Result from './components/Result';
 
 export default class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      buttonsPressed: []
+    };
   }
 
-  handlePress = () => {
-    console.log('button pressed');
+  // add state to handle button available / disabled
+
+  handleNumber = (children) => {
+    const updated = [...this.state.buttonsPressed, children];
+    this.setState({ buttonsPressed: updated });
+  }
+
+  handleDelete = () => {
+    const updated = this.state.buttonsPressed.filter((item, index )=> index !== this.state.buttonsPressed.length - 1);
+    this.setState({ buttonsPressed: updated });
   }
 
   render() {
-
-    const {} = this.props;
     return (
       <View style={styles.container}>
+        <Result />
         <Squares
-          handlePress = {this.handlePress}
+          handleNumber={this.handleNumber}
+          handleDelete={this.handleDelete}
         />
       </View>
     );
@@ -44,8 +47,8 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
     backgroundColor: '#F5FCFF',
     width: wp('100%')
   },
@@ -64,6 +67,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   button: {
-    
+
   }
 });
