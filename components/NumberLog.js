@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const Result = ({ currentResult }) => (
+const NumberLog = ({ currentLog }) => (
   <View style={styles.textCont}>
-    <Text style={styles.text}>{currentResult}</Text>
+    <Text style={styles.text}>{currentLog}</Text>
   </View>
 );
 
@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
     margin: 20
   },
   text: {
-    fontSize: 30,
+    fontSize: 20,
   }
 });
 
-export default Result;
+export default NumberLog;

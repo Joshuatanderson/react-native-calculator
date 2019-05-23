@@ -3,7 +3,6 @@ import { View, StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Square from './Square';
 
-
 export default class Squares extends Component {
   constructor(props) {
     super(props);
@@ -11,9 +10,12 @@ export default class Squares extends Component {
   }
 
   assignFunction = (symbol) => {
-    console.log(symbol);
+    const isSymbol = ['%' || '/' || '÷' || '×' || '-' || '+'].find(item => item === symbol);
+    console.log(isSymbol);
     if (symbol === 'Del') {
       return this.props.handleDelete;
+    } if (isSymbol !== undefined) {
+      return this.props.handleOperator;
     }
     return this.props.handleNumber;
   }
