@@ -17,49 +17,71 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonsPressed: [],
-      currentValue: null
+      currentValue: null,
+      stack: []
     };
   }
 
-  // add state to handle button available / disabled
-
-  handleNumber = (children) => {
-    const pressed = this.state.buttonsPressed;
-    const last = pressed[pressed.length - 1] ? pressed + children : children;
-    const rest = pressed.filter((item, index) => index !== pressed.length - 1);
-    const updated = rest.concat(last);
+  handleNumber = (number) => {
+    const currentStack = this.state.stack;
+    const last = currentStack[currentStack.length - 1] || '';
+    const added = number;
     this.setState({
-      buttonsPressed: updated,
-      currentValue: updated
+      stack: [...currentStack, last + number],
+      currentValue: added
     });
+    // run calcCurrentTotal function
   }
 
   handleDelete = () => {
-    const updated = this.state.buttonsPressed.filter((item, index) => index !== this.state.buttonsPressed.length - 1);
-    this.setState({ buttonsPressed: updated });
+    const updated = this.state.stack.filter((item, index) => index !== this.state.stack.length - 1);
+    const last = this.state.stack[this.state.stack.length - 1];
+    this.setState({ 
+      stack: updated,
+      currentValue: last
+    });
   }
 
-  handleOperator = (symbol) => {
-    console.log(`i ran ${symbol}`);
-    this.setState({ 
-      buttonsPressed: [...this.state.buttonsPressed, symbol],
+  handleOperator = (operator) => {
+    console.log(`i ran ${operator}`);
+    this.setState({
+      stack: [...this.state.stack, operator],
     });
   }
 
   render() {
+    const squareConfig = {
+      'CE': this.handleDelete,
+      '%': this.handleOperator,
+      '/': this.handleOperator,
+      'Del': this.handleDelete,
+      '7': this.handleNumber,
+      '8': this.handleNumber,
+      '9': this.handleNumber,
+      '÷': this.handleOperator,
+      '4': this.handleNumber,
+      '5': this.handleNumber,
+      '6': this.handleNumber,
+      '×': this.handleOperator,
+      '1': this.handleNumber,
+      '2': this.handleNumber,
+      '3': this.handleNumber,
+      '-': this.handleOperator,
+      '0': this.handleNumber,
+      '.': this.handleOperator,
+      '(': this.handleOperator,
+      '+': this.handleOperator
+    };
     return (
       <View style={styles.container}>
         <Result
-          currentResult={this.state.buttonsPressed}
+          currentResult={this.state.currentValue}
         />
         <NumberLog
-          currentLog={this.state.buttonsPressed}
+          currentLog={this.state.stack[this.state.stack.length - 1]}
         />
         <Squares
-          handleNumber={this.handleNumber}
-          handleDelete={this.handleDelete}
-          handleOperator={this.handleOperator}
+          squareConfig={squareConfig}
         />
       </View>
     );

@@ -8,7 +8,7 @@ export default class Squares extends Component {
     super(props);
     this.state = {};
   }
-
+  
   assignFunction = (symbol) => {
     const isSymbol = ['%' || '/' || '÷' || '×' || '-' || '+'].find(item => item === symbol);
     console.log(isSymbol);
@@ -20,38 +20,38 @@ export default class Squares extends Component {
     return this.props.handleNumber;
   }
 
-  createSquares = (start, end, symbols) => {
+  createSquares = (start, end, symbols, squareConfig) => {
     const squares = [];
-    for (let i = start; i <= end; i++) {
-      squares.push(<Square key={i} id={`btn-${i}`} handlePress={this.assignFunction(symbols[i])}>{symbols[i]}</Square>);
+    for (let i = start; i <= end; i += 1) {
+      squares.push(<Square key={i} id={`btn-${i}`} handlePress={squareConfig[symbols[i]]}>{symbols[i]}</Square>);
     }
     return squares;
   }
 
   render() {
+    const symbols = ['CE', '%', '/', 'Del', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '-', '0', '.', '(', '+'];
+    const { squareConfig } = this.props;
     return (
       <View style={styles.squareCont}>
         <View style={styles.row}>
-          {this.createSquares(0, 3, symbols)}
+          {this.createSquares(0, 3, symbols, squareConfig)}
         </View>
         <View style={styles.row}>
-          {this.createSquares(4, 7, symbols)}
+          {this.createSquares(4, 7, symbols, squareConfig)}
         </View>
         <View style={styles.row}>
-          {this.createSquares(8, 11, symbols)}
+          {this.createSquares(8, 11, symbols, squareConfig)}
         </View>
         <View style={styles.row}>
-          {this.createSquares(12, 15, symbols)}
+          {this.createSquares(12, 15, symbols, squareConfig)}
         </View>
         <View style={styles.row}>
-          {this.createSquares(16, 19, symbols)}
+          {this.createSquares(16, 19, symbols, squareConfig)}
         </View>
       </View>
     );
   }
 }
-
-const symbols = ['CE', '%', '/', 'Del', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '-', '0', '.', '(', '+'];
 
 const styles = StyleSheet.create({
   squareCont: {
