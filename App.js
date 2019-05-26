@@ -25,22 +25,20 @@ export default class App extends Component {
   handleNumber = (number) => {
     const currentStack = this.state.stack;
     const last = currentStack[currentStack.length - 1] || '';
-    const added = number;
     this.setState({
       stack: [...currentStack, last + number],
-      currentValue: added
+      currentValue: this.calcResult(last + number)
     });
-    // run calcCurrentTotal function
   }
 
   handleDelete = () => {
     const updated = this.state.stack.filter((item, index) => index !== this.state.stack.length - 1);
-    const lastState = updated[updated.length - 1] || ''; //
-    const lastCharacter = lastState[updated.length - 1] || '';
+    const lastState = updated[updated.length - 1] || '';
+    // const lastCharacter = lastState[updated.length - 1] || '';
     console.log(lastState || '');
     this.setState({
       stack: updated,
-      currentValue: lastCharacter
+      currentValue: this.calcResult(lastState)
     });
   }
 
@@ -57,36 +55,40 @@ export default class App extends Component {
 
     this.setState({
       stack: [...currentStack, last + operator],
-      currentValue: this.calcResult()
+      currentValue: this.calcResult(last + operator)
     });
   }
 
-  calcResult = () => {
-    const currentStack = this.state.stack[this.state.stack.length - 1] || '';
-    // const regex = new RegExp('/\d', 'g');
-    console.log(currentStack.match(/^-?\d+(,\d+)*(\.\d+(e\d+)?)?$ /g) || ''); // https://regexone.com/problem/matching_decimal_numbers
-    return currentStack.match(/\d/g) || '';
+  calcResult = (inputString) => {
+    let total = 0;
+    const newString = inputString.match(/[+\-]*(\.\d+|\d+(\.\d+)?)/g) || []; // https://stackoverflow.com/questions/2276021/evaluating-a-string-as-a-mathematical-expression-in-javascript answer #2
+    while (newString.length) {
+      total += parseFloat(newString.shift());
+    }
+    console.log(`total: ${total}`);
+    console.log(`input: ${inputString}`);
+    return total;
   }
 
   render() {
     const squareConfig = {
-      'CE': this.clearAll,
+      CE: this.clearAll,
       '%': this.handleOperator,
       '/': this.handleOperator,
-      'Del': this.handleDelete,
-      '7': this.handleNumber,
-      '8': this.handleNumber,
-      '9': this.handleNumber,
+      Del: this.handleDelete,
+      7: this.handleNumber,
+      8: this.handleNumber,
+      9: this.handleNumber,
       '÷': this.handleOperator,
-      '4': this.handleNumber,
-      '5': this.handleNumber,
-      '6': this.handleNumber,
+      4: this.handleNumber,
+      5: this.handleNumber,
+      6: this.handleNumber,
       '×': this.handleOperator,
-      '1': this.handleNumber,
-      '2': this.handleNumber,
-      '3': this.handleNumber,
+      1: this.handleNumber,
+      2: this.handleNumber,
+      3: this.handleNumber,
       '-': this.handleOperator,
-      '0': this.handleNumber,
+      0: this.handleNumber,
       '.': this.handleOperator,
       '(': this.handleOperator,
       '+': this.handleOperator
