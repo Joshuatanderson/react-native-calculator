@@ -35,23 +35,42 @@ export default class App extends Component {
 
   handleDelete = () => {
     const updated = this.state.stack.filter((item, index) => index !== this.state.stack.length - 1);
-    const last = this.state.stack[this.state.stack.length - 1];
-    this.setState({ 
+    const lastState = updated[updated.length - 1] || ''; //
+    const lastCharacter = lastState[updated.length - 1] || '';
+    console.log(lastState || '');
+    this.setState({
       stack: updated,
-      currentValue: last
+      currentValue: lastCharacter
+    });
+  }
+
+  clearAll = () => {
+    this.setState({
+      stack: [],
+      currentValue: null
     });
   }
 
   handleOperator = (operator) => {
-    console.log(`i ran ${operator}`);
+    const currentStack = this.state.stack;
+    const last = currentStack[currentStack.length - 1] || '';
+
     this.setState({
-      stack: [...this.state.stack, operator],
+      stack: [...currentStack, last + operator],
+      currentValue: this.calcResult()
     });
+  }
+
+  calcResult = () => {
+    const currentStack = this.state.stack[this.state.stack.length - 1] || '';
+    // const regex = new RegExp('/\d', 'g');
+    console.log(currentStack.match(/^-?\d+(,\d+)*(\.\d+(e\d+)?)?$ /g) || ''); // https://regexone.com/problem/matching_decimal_numbers
+    return currentStack.match(/\d/g) || '';
   }
 
   render() {
     const squareConfig = {
-      'CE': this.handleDelete,
+      'CE': this.clearAll,
       '%': this.handleOperator,
       '/': this.handleOperator,
       'Del': this.handleDelete,
