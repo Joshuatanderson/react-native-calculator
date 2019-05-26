@@ -27,18 +27,18 @@ export default class App extends Component {
     const last = currentStack[currentStack.length - 1] || '';
     this.setState({
       stack: [...currentStack, last + number],
-      currentValue: this.calcResult()
+      currentValue: this.calcResult(last + number)
     });
   }
 
   handleDelete = () => {
     const updated = this.state.stack.filter((item, index) => index !== this.state.stack.length - 1);
     const lastState = updated[updated.length - 1] || '';
-    const lastCharacter = lastState[updated.length - 1] || '';
+    // const lastCharacter = lastState[updated.length - 1] || '';
     console.log(lastState || '');
     this.setState({
       stack: updated,
-      currentValue: this.calcResult()
+      currentValue: this.calcResult(lastState)
     });
   }
 
@@ -55,17 +55,20 @@ export default class App extends Component {
 
     this.setState({
       stack: [...currentStack, last + operator],
-      currentValue: this.calcResult()
+      currentValue: this.calcResult(last + operator)
     });
   }
 
-  calcResult = () => {
-    const currentStackItem = this.state.stack[this.state.stack.length - 1] || '';
-    console.log(currentStackItem.match(/^-?\d+(,\d+)*(\.\d+(e\d+)?)?$ /g) || ''); // https://regexone.com/problem/matching_decimal_numbers
-    return this.evaluationHelper(currentStackItem) || '';
+  calcResult = (inputString) => {
+    let total = 0;
+    const newString = inputString.match(/[+\-]*(\.\d+|\d+(\.\d+)?)/g) || []; // https://stackoverflow.com/questions/2276021/evaluating-a-string-as-a-mathematical-expression-in-javascript answer #2
+    while (newString.length) {
+      total += parseFloat(newString.shift());
+    }
+    console.log(`total: ${total}`);
+    console.log(`input: ${inputString}`);
+    return total;
   }
-
-  evaluationHelper = stringToBeEvaluated => Function(`"use strict";return (${  stringToBeEvaluated  })`)();
 
   render() {
     const squareConfig = {
