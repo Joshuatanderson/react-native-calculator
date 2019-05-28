@@ -61,12 +61,14 @@ export default class App extends Component {
 
   calcResult = (inputString) => {
     let total = 0;
-    const newString = inputString.match(/[+\-]*(\.\d+|\d+(\.\d+)?)/g) || []; // https://stackoverflow.com/questions/2276021/evaluating-a-string-as-a-mathematical-expression-in-javascript answer #2
+    const replacementString = inputString.replace(/[×+]/, /\*\\/);
+    const regEx = new RegExp(/[+-]*(\.\d+|\d+(\.\d+)?)/g);
+    const newString = replacementString.match(regEx) || []; // https://stackoverflow.com/questions/2276021/evaluating-a-string-as-a-mathematical-expression-in-javascript answer #2
     while (newString.length) {
       total += parseFloat(newString.shift());
     }
     console.log(`total: ${total}`);
-    console.log(`input: ${inputString}`);
+    console.log(`replacementString: ${replacementString}`);
     return total;
   }
 
