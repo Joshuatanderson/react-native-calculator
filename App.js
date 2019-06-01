@@ -9,6 +9,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Mathjs from 'mathjs';
 import Squares from './components/Squares';
 import Result from './components/Result';
 import NumberLog from './components/NumberLog';
@@ -17,7 +18,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentValue: null,
+      currentResult: '',
       stack: []
     };
   }
@@ -27,48 +28,60 @@ export default class App extends Component {
     const last = currentStack[currentStack.length - 1] || '';
     this.setState({
       stack: [...currentStack, last + number],
-      currentValue: this.calcResult(last + number)
+      currentResult: this.calcResult(last + number)
     });
   }
 
   handleDelete = () => {
     const updated = this.state.stack.filter((item, index) => index !== this.state.stack.length - 1);
     const lastState = updated[updated.length - 1] || '';
-    // const lastCharacter = lastState[updated.length - 1] || '';
     console.log(lastState || '');
     this.setState({
       stack: updated,
-      currentValue: this.calcResult(lastState)
+      currentResult: this.calcResult(lastState)
     });
   }
 
   clearAll = () => {
     this.setState({
       stack: [],
-      currentValue: null
+      currentResult: null
     });
   }
 
   handleOperator = (operator) => {
     const currentStack = this.state.stack;
-    const last = currentStack[currentStack.length - 1] || '';
-
-    this.setState({
-      stack: [...currentStack, last + operator],
-      currentValue: this.calcResult(last + operator)
-    });
+    const lastStackItem = currentStack[currentStack.length - 1] || '';
+    const lastCharacter = lastStackItem[lastStackItem.length - 1];
+    console.log(lastCharacter);
+    if (lastCharacter.match(/\d/)) {
+      this.setState({
+        stack: [...currentStack, lastStackItem + operator],
+        currentResult: this.calcResult(lastStackItem + operator)
+      });
+    } else {
+      const trimmedStackItem = lastStackItem.slice(0, -1);
+      this.setState({
+        stack: [...currentStack, trimmedStackItem + operator],
+        currentResult: this.calcResult(trimmedStackItem + operator)
+      });
+    }
   }
+  // todo: add replacement for % operator
+  // validate input for consecutive operators
+
 
   calcResult = (inputString) => {
-    let total = 0;
-    const replacementString = inputString.replace(/[×+]/, /\*\\/);
-    const regEx = new RegExp(/[+-]*(\.\d+|\d+(\.\d+)?)/g);
-    const newString = replacementString.match(regEx) || []; // https://stackoverflow.com/questions/2276021/evaluating-a-string-as-a-mathematical-expression-in-javascript answer #2
-    while (newString.length) {
-      total += parseFloat(newString.shift());
+    let total = this.state.currentResult;
+    const symbols = ['(', ')', '/', '+', '-', '*', '/', '.'];
+    const replacementDivision = inputString.replace(/÷/, '/');
+    const replacementString = replacementDivision.replace(/×/, '*');
+    const lastCharacter = replacementString[replacementString.length - 1];
+    if (symbols.find(element => element === lastCharacter)) {
+      return total;
     }
-    console.log(`total: ${total}`);
-    console.log(`replacementString: ${replacementString}`);
+
+    total = Mathjs.eval(replacementString);
     return total;
   }
 
@@ -98,7 +111,7 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <Result
-          currentResult={this.state.currentValue}
+          currentResult={this.state.currentResult}
         />
         <NumberLog
           currentLog={this.state.stack[this.state.stack.length - 1]}
