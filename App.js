@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -19,7 +11,8 @@ export default class App extends Component {
     super(props);
     this.state = {
       currentResult: '',
-      stack: []
+      stack: [],
+      parenthesesIsOpening: true
     };
   }
 
@@ -35,11 +28,14 @@ export default class App extends Component {
   handleDelete = () => {
     const updated = this.state.stack.filter((item, index) => index !== this.state.stack.length - 1);
     const lastState = updated[updated.length - 1] || '';
-    console.log(lastState || '');
     this.setState({
       stack: updated,
       currentResult: this.calcResult(lastState)
     });
+    const currentStack = this.state.stack;
+    const lastStackItem = currentStack[currentStack.length - 1] || '';
+    const lastCharacter = lastStackItem[lastStackItem.length - 1];
+    this.conditionallyToggleParentheses(lastCharacter);
   }
 
   clearAll = () => {
@@ -53,8 +49,9 @@ export default class App extends Component {
     const currentStack = this.state.stack;
     const lastStackItem = currentStack[currentStack.length - 1] || '';
     const lastCharacter = lastStackItem[lastStackItem.length - 1];
+
     console.log(lastCharacter);
-    if (lastCharacter.match(/\d/)) {
+    if (lastCharacter.match(/\d|(|)/)) {
       this.setState({
         stack: [...currentStack, lastStackItem + operator],
         currentResult: this.calcResult(lastStackItem + operator)
@@ -66,6 +63,7 @@ export default class App extends Component {
         currentResult: this.calcResult(trimmedStackItem + operator)
       });
     }
+    this.conditionallyToggleParentheses(operator);
   }
   // todo: add replacement for % operator
   // validate input for consecutive operators
@@ -80,9 +78,17 @@ export default class App extends Component {
     if (symbols.find(element => element === lastCharacter)) {
       return total;
     }
-
     total = Mathjs.eval(replacementString);
     return total;
+  }
+
+  conditionallyToggleParentheses = (character) => {
+    console.log(`running with ${character}`);
+    if (character === '(' || character === ')') {
+      this.setState({
+        parenthesesIsOpening: !this.state.parenthesesIsOpening
+      });
+    }
   }
 
   render() {
@@ -106,6 +112,7 @@ export default class App extends Component {
       0: this.handleNumber,
       '.': this.handleOperator,
       '(': this.handleOperator,
+      ')': this.handleOperator,
       '+': this.handleOperator
     };
     return (
@@ -118,6 +125,7 @@ export default class App extends Component {
         />
         <Squares
           squareConfig={squareConfig}
+          parenthesesState={this.state.parenthesesIsOpening}
         />
       </View>
     );

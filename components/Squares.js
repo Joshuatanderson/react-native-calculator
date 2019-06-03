@@ -8,7 +8,7 @@ export default class Squares extends Component {
     super(props);
     this.state = {};
   }
-  
+
   assignFunction = (symbol) => {
     const isSymbol = ['%' || '/' || '÷' || '×' || '-' || '+'].find(item => item === symbol);
     console.log(isSymbol);
@@ -29,7 +29,8 @@ export default class Squares extends Component {
   }
 
   render() {
-    const symbols = ['CE', '%', '/', 'Del', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '-', '0', '.', '(', '+'];
+    const parentheses = this.props.parenthesesState ? '(' : ')';
+    const symbols = ['CE', '%', '/', 'Del', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '-', '0', '.', parentheses, '+'];
     const { squareConfig } = this.props;
     return (
       <View style={styles.squareCont}>
